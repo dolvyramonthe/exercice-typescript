@@ -16,6 +16,6 @@ export default function ma_command (){
   
 };
 
- ma_command();
+ //ma_command();
 
   
