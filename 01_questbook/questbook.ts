@@ -1,21 +1,22 @@
 
+const fs = require('fs');
 const command = process.argv[2];
+const pathJson = process.argv[process.argv.length - 1];
 
-export default function ma_command (){
-  if (command === "--list") {
-  console.log("Using list.");
-
-} else if (command === "--info") {
-  console.log("using info.");
-
-}else if (command === "--add"){
-  console.log("using add.")
-}else{
-   console.error("Wrong use of the program.") 
-}
+  try { 
+    const content = fs.readFileSync(pathJson, 'utf-8');
+    const contentObjet = JSON.parse(content);
+  if (command === '--list') {
+    console.log("Using list.");
   
-};
-
- //ma_command();
-
-  
+  } else if (command === '--info') {
+    console.log("Using info.");
+    
+  } else if (command === '--add') {
+    console.log("Using add.");
+    
+  }
+  }
+  catch (error) {
+    console.error("Wrong use of the program.");
+  }
