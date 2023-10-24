@@ -1,41 +1,39 @@
 const fs = require('fs');
+import { completeState,quest } from "./lib";
 
-function displayQuestInfo(questId, questbookFile) {
-  try {
-    const questbookData = JSON.parse(fs.readFileSync(questbookFile, 'utf8'));
-
-    const quest = questbookData.find(entry => entry.id === questId);
-
-    if (!quest) {
-      console.log("This quest doesn't exist.");
-      return;
+export function info(json:string, id:number){
+    const filecontent = fs.readFileSync(json, 'utf-8');
+    const jsonObject : quest[] = JSON.parse(filecontent);
+    let count = 0;
+    for(const file of jsonObject){ 
+    if (file.id === id){
+        select(file,file.id);
+        count ++;
     }
-
-    console.log('========================================');
-    console.log(`#${quest.id} ${quest.name} (${quest.quest_type} quest)`);
-    console.log('========================================');
-    console.log(`Given by ${quest.quest_giver}`);
-    
-    if (quest.completion_state === 1) {
-      console.log(`Completed from ${quest.start_date} to ${quest.end_date}.`);
-    } else if (quest.completion_state === 0) {
-      console.log('Currently ongoing.');
-    } else if (quest.completion_state === 2) {
-      console.log(`Failed from ${quest.start_date} to ${quest.end_date}.`);
+    } if (count === 0){
+        console.log("This quest doesn't exist.");
     }
-
-    console.log('========================================');
-    console.log(`Goal: ${quest.description}`);
-    console.log(`Reward: ${quest.reward || '---'}`);
-  } catch (err) {
-    console.error('An error occurred:', err);
-  }
 }
 
-if (process.argv.length !== 5) {
-  console.log('Usage: node questbook --info <questId> <questbook.json>');
+export function select(file: quest, id: number){
+if (file.id === id)
+console.log(`========================================`);
+console.log(`#${file.id} ${file.name} (${file.quest_type} quest)`);
+console.log(`========================================`);
+console.log(`Given by ${file.quest_giver}`);
+if (file.completion_state === 1){  
+console.log(`Completed since the ${file.end_date}.`);
+} else if(file.completion_state === 0){
+console.log("Currently ongoing.")
+} else{
+    console.log(`Failed the ${file.end_date}.`);
+}
+console.log(`========================================`);
+console.log(`Goal: ${file.description}`);
+if (file.name === file.reward){
+    console.log('Reward: ---');
 } else {
-  const questId = parseInt(process.argv[3], 10);
-  const questbookFile = process.argv[4];
-  displayQuestInfo(questId, questbookFile);
+    console.log(`Reward: ${file.reward}`);
+}
+return;
 }
